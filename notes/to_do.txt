@@ -1,0 +1,5 @@
+[ ] rewrite print_results
+[ ] fix group_nucs
+[ ] fix gen
+[ ] implement keyword arguments
+[ ] use numpy vector arithmetic
