@@ -1,0 +1,4 @@
+Acceptable residual values can be said to range from _ to _.
+Residuals and pitch calculations for segments with lengths ranging from 1 to 20 base pairs
+For segments with less than eight base pairs, residual is a large whole-number value and pitch is not accurate. For segments with eight or more base pairs fit suddenly becomes accurate, with residual < 0.1, and pitch is always within 2 A of the actual value. Radius and center are always close to the actual values, suggesting problems related to measurement of the atoms' displacement.
+Including only phosphorus atoms in calculations results in a notably lower residual, but the same results regarding pitch (Table 2.)
