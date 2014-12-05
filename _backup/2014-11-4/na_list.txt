@@ -1,2 +1,0 @@
-nucleic = 'DA5 DA3 DA DT5 DT3 DT DG5 DG3 DG DC5 DC3 DC'
-awk(
