@@ -1,0 +1,17 @@
+- implement l-bfgs.
+	- make SVA into a function
+	[ ] what is input for SVA?
+	[ ] figure out information flow (a and b mats?)
+	[ ] align variables correctly
+	- how to make bfgs step?
+	- lines 36-37 in sr.residual
+	- read:
+		- stopping/termination tests
+		- machine precision
+		- how functions work in fortran
+		- do loop syntax
+		- arithmetic, scientific notation 
+		- stepwise?
+        - call bfgs using res function
+                * must output the same variables
+                - residual array (RESMAT) no longer needed

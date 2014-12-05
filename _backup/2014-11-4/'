@@ -1,0 +1,7 @@
+import dna_from_pdb as dna
+
+mterf = dna.DnaMolecule('3MVA.pdb', mask=['C3\'', 'O4\'', 'C5\'', 'O3\'', 'P', '05\''])
+for nuc in next(mterf.pair_nucs()):
+    for atom in nuc:
+        print atom['atom_name']
+    print '\n'
