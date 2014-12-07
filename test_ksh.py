@@ -41,25 +41,25 @@ class TestCrds:
     def test_crds():
         self.crdset.test_crds()
 
-a = parse_pdb('bdna.4bp.bbatoms.pdb')
-#test_crds(a, title="4 base pairs, backbone atoms")
+a = parse_pdb('./pdb/bdna.4bp.bbatoms.pdb')
+##test_crds(a, title="4 base pairs, backbone atoms")
+##
+#c = get_crds('bdna.pdb')
+##test_crds(c)
+##
+##btest = get_crds('B.test.crd')
+##test_crds(btest, title="One strand")
+##rotation_fit(btest)
 #
-c = get_crds('bdna.pdb')
-#test_crds(c)
+#e55 = parse_pdb('e55onestrand.pdb')
+##e55 = TestCrds('e55dna.pdb', type='pdb')
+##e55.test_crds
 #
-#btest = get_crds('B.test.crd')
-#test_crds(btest, title="One strand")
-#rotation_fit(btest)
-
-e55 = parse_pdb('e55onestrand.pdb')
-#e55 = TestCrds('e55dna.pdb', type='pdb')
-#e55.test_crds
-
-idealb = parse_pdb('ideal_bdna.pdb')
-#rotation_fit(idealb, title="Best fit from pdb")
-
-
-bp_idealb = bp.dna('ideal_bdna.pdb')
-#bp_idealb.strip_strand_crds('id_bdna_strand.crd')
-#idb_strand = get_crds('id_bdna_strand.crd')
-#test_crds(idb_strand)
+#idealb = parse_pdb('ideal_bdna.pdb')
+##rotation_fit(idealb, title="Best fit from pdb")
+#
+#
+#bp_idealb = bp.dna('ideal_bdna.pdb')
+##bp_idealb.strip_strand_crds('id_bdna_strand.crd')
+##idb_strand = get_crds('id_bdna_strand.crd')
+##test_crds(idb_strand)

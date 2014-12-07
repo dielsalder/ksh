@@ -88,6 +88,6 @@ class dna:
         self.parse_strand()
         self.pair_crds()
 
-inp_pdb = '3MVA.pdb'
+inp_pdb = './pdb/3MVA.pdb'
 a = dna(inp_pdb)
 a.printf_pairs()
