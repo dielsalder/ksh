@@ -30,6 +30,6 @@ def find_best_pitch(inp_dna):
     for min_res in res_search(inp_dna):
         add_pairs(min_res)
 
-inp_pdb = '3MVA.pdb'
+inp_pdb = './pdb/3MVA.pdb'
 inp_dna = base_pairs.dna(inp_pdb)
 find_best_pitch(inp_dna.base_pairs)

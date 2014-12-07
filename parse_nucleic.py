@@ -1,7 +1,7 @@
 import re
 import sys
 
-inp_pdb = '3MVA.pdb'
+inp_pdb = './pdb/3MVA.pdb'
 #inp_pdb = sys.argv[1]
 
 crds = []

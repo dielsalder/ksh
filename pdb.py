@@ -22,7 +22,7 @@ class Pdb:
                 and atom['atom_name'] in atom_name])
         return selection
 
-b = Pdb('ideal_bdna.pdb')
+b = Pdb('./pdb/ideal_bdna.pdb')
 
 b.p = b.select(res = ['G'], atom_name = ['P'])
 b.write(b.atoms)
