@@ -11,9 +11,10 @@ def pdbcrds(pdb_file):
     crdset = ksh.crdset(bp.strip_crds_strict_pdb(pdb_file))
     return crdset
 
-class TestCrds:
+class Test:
     """Load and test set of coordinates"""
     def __init__(self, name, type='crds'):
+        """Load coordinates from text or pdb"""
         if type == 'crds':
             self.crdset = textcrds(name)
         elif type == 'pdb':
@@ -31,14 +32,16 @@ class TestCrds:
         best = ksh.best_rotation(self.crdset)
         best.print_results(title)
 
-    def min_ref(self, reference_crds=self.crdset):
-        """Print known fit then minimization attempt"""
-        reference_crds.test_crds(title="True best coordinates")
-        self.crdset.rotation_fit(title="Best fit")
+   # def min_ref(self, reference_crds=self.crdset):
+   #     """Print known fit then minimization attempt"""
+   #     reference_crds.test_crds(title="True best coordinates")
+   #     self.crdset.rotation_fit(title="Best fit")
 
-    def rotate(self, phi=180, the=0):
-        """Fit rotation by specified phi and theta"""
-        pass
+   # def rotate(self, phi=180, the=0):
+   #     """Fit rotation by specified phi and theta"""
+   #     pass
 
+bdna = Test('./pdb/bdna.pdb')
+bdna.fit()
 #while True:
 #	cmd, *args = shlex.split(input('\> '))
