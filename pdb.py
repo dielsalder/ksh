@@ -1,6 +1,3 @@
-def flatten(items, ignore_types=(str, bytes, dict)):
-    """Flatten nested lists of arbitrary length"""
-    for x in items:
         if isinstance(x, collections.Iterable) and not isinstance(x, ignore_types):
             for i in flatten(x):
                 yield i
