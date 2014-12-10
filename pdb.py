@@ -1,3 +1,5 @@
+def flatten(x):
+    for i in x:
         if isinstance(x, collections.Iterable) and not isinstance(x, ignore_types):
             for i in flatten(x):
                 yield i
@@ -42,6 +44,7 @@ class Pdb:
 class Molecule:
     def __init__(self, atoms):
         self.atoms = atoms
+        self.fits = []
 
     def select(self, res = [], atom_name = []):
         """Select atoms by residue and element"""
@@ -66,8 +69,37 @@ class Molecule:
             line = '    '.join(str(v) for v in vals)
             out.write(line)
 
+    def minimize(self, selection):
+        """fit minimized helix"""
+        crds = crds_of(selection)
+        fit = Fit(crds)
+        self.fits.append(fit.minimize())
+        return self.fits[-1]
+
 class Dna(Molecule):
     pass
+
+class Fit:
+    """Store fit results"""
+    def __init__(self, crds)
+        self.crdset = ksh.crdset(crds)
+
+    def no_rotate(self):
+        """Fit without rotation"""
+        fit = self.crdset.calc_all()
+        self.no_rotate = fit
+        return self.no_rotate
+
+    def minimize(self):
+        """Minimize rotation"""
+        rotation = ksh.best_rotation(self.crdset)
+        best = rotation.calc_all()
+        self.best = best
+        return self.best
+
+    def write_minimize(self, Molecule):
+        """Write minimized fit to selected Molecule"""
+        Molecule.fits.append(self.best)
 
 #b = Pdb('./pdb/ideal_bdna.pdb')
 #

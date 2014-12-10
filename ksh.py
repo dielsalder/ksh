@@ -135,6 +135,8 @@ class crdset:
         self.calc_res_v()
         self.lstsq_results()    # circle parameters
         self.helical_results()  # helical parameters
+        return [self.lstsq(), self.calc_res_v(), self.lstsq_results,
+            self.helical_results()]
 
     def print_results(self, title=''):
         """Print results of calculations with optional title"""
