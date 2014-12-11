@@ -1,10 +1,11 @@
-def flatten(x):
-    for i in x:
-        if isinstance(x, collections.Iterable) and not isinstance(x, ignore_types):
-            for i in flatten(x):
-                yield i
-        else:
-            yield x
+from dna import Dna
+#def flatten(x):
+#    for i in x:
+#        if isinstance(x, collections.Iterable) and not isinstance(x, ignore_types):
+#            for i in flatten(x):
+#                yield i
+#        else:
+#            yield x
 
 
 def atom(line):
@@ -75,9 +76,6 @@ class Molecule:
         fit = Fit(crds)
         self.fits.append(fit.minimize())
         return self.fits[-1]
-
-class Dna(Molecule):
-    pass
 
 class Fit:
     """Store fit results"""

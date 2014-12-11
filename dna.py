@@ -1,7 +1,5 @@
-import re
-import operator
-import itertools
-import collections
+from re import search
+from collections import Iterable
 
 def flatten(items, ignore_types=(str, bytes, dict)):
     """Flatten nested lists of arbitrary length"""
@@ -46,14 +44,14 @@ def crds_of(atoms):
     crds = [[atom['x'], atom['y'], atom['z']] for atom in flatten(atoms)]
     return crds
 
-class DnaMolecule:
+class Dna:
     """Store data for the atoms in one DNA molecule"""
     def __init__(self, pdb_name, mask=[]):
         self.atoms = atoms_from_pdb(pdb_name)
         self.mask = mask
         self.mask_atoms()
         self.group_strands()
-        self.group_nucs()
+        self.base_pairs()
         self.all_crds = crds_of(self.atoms)
 
     def mask_atoms(self):
@@ -66,38 +64,42 @@ class DnaMolecule:
             self.all_atoms = self.atoms
             self.atoms = masked
 
-    def group_strands(self):
-        """Group atoms by helix strand"""
-        n = 1   # Residue numbering start
+    def group_strands(self, n = 1):
+        """
+        Group atoms by helix strand
+        Set n as starf of residue numbering
+        """
+
         prev_atom = {'res_num': n}
         for i, atom in enumerate(self.atoms):
             if (atom['res_num'] != prev_atom['res_num'] and
                     atom['res_num'] == n):
                 strand1 = self.atoms[0:i]
                 strand2 = self.atoms[i:]
-                self.atoms = [strand1, strand2]
             prev_atom = atom
-        #for strand in self.atoms:
-        #    # sort by residue
-        #    strand.sort(key=operator.itemgetter('res_num'))
+        for atom in self.atoms:
+            if atom in strand1:
+                atom['strand'] = 1
+            elif atom in strand2:
+                atom['strand'] = 2
         return self.atoms
 
-    def group_nucs(self):
-        """Group atoms within strand by nucleotide"""
-        keyfunc = operator.itemgetter('res_num')
-        self.atoms = [[list(grp) for key, grp in itertools.groupby(sorted(strand, key=keyfunc),
-            key=keyfunc)] for strand in self.atoms]
-        return self.atoms
+    def base_pairs(self):
+        str1 = [atom for atom in self.atoms if atom['strand'] == 1]
+        str2 = [atom for atom in self.atoms if atom['strand'] == 2]
+        for i, (a, b) in enumerate(zip(str1, str2)):
+            a['pair'] = i
+            b['pair'] = i
 
-    def pair_nucs(self, n=0):
+    def get_pairs(self, start = 0, end = 10):
         """Get base pairs"""
         # Both strands are numbered 5' to 3'
-        for (a, b) in zip(self.atoms[0], reversed(self.atoms[1])):
-            yield (a, b)
+        for i in range(start, end):
+            yield [atom for atom in self.atoms if atom['pair'] == i]
 
     def pair_crds(self):
         """Coordinates by base pair"""
-        for pair in self.pair_nucs():
+        for pair in self.get_pairs():
             yield crds_of(pair)
 
 #    def pdb(self, mask=['P'], out='dna_out.pdb')
