@@ -1,3 +1,5 @@
+from re import search
+
 def flatten(x):
     for i in x:
         if isinstance(x, collections.Iterable) and not isinstance(x, ignore_types):
@@ -14,10 +16,10 @@ def atom(line):
             atom_num = int(line[1]),
             atom_name = line[2],
             res_name = line[3],
-            res_num = int(line[4]),
-            x = float(line[5]),
-            y = float(line[6]),
-            z = float(line[7])
+            res_num = int(line[5]),
+            x = float(line[6]),
+            y = float(line[7]),
+            z = float(line[8])
     )
     return atom
 
@@ -36,7 +38,7 @@ class Pdb:
     def get_nucleic(self):
         """Read only nucleic acid atoms in pdb file"""
         with open(self.filename) as pdb:
-            atoms = [atom(line) for line in pdb if re.search
+            atoms = [atom(line) for line in pdb if search
                     ('(^ATOM)\s*\S*\s*\S*\s*'
                      '(DA5|DA3|DA|DT5|DT3|DT|DG5|DG3|DG|DC5|DC3|DC)', line)]
         return atoms
@@ -81,7 +83,7 @@ class Dna(Molecule):
 
 class Fit:
     """Store fit results"""
-    def __init__(self, crds)
+    def __init__(self, crds):
         self.crdset = ksh.crdset(crds)
 
     def no_rotate(self):
