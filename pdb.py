@@ -1,3 +1,4 @@
+import collections
 from re import search
 
 def flatten(x):
