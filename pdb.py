@@ -72,8 +72,56 @@ class Molecule:
         """fit minimized helix"""
         crds = crds_of(selection)
         fit = Fit(crds)
-        self.fits.append(fit.minimize())
-        return self.fits[-1]
+        min_fit = (fit.minimize())
+        self.fits.append(min_fit)
+        return min_fit
+
+class Dna(Molecule):
+    """Store data for the atoms in one DNA molecule"""
+    def __init__(self, atoms):
+        self.atoms = atoms
+        self.strands()
+        self.pairs()
+        self.all_crds = self.crds_of(self.atoms)
+
+    def strands(self, n = 1):
+        """
+        Group atoms by helix strand
+        Set n as starf of residue numbering
+        """
+
+        prev_atom = {'res_num': n}
+        for i, atom in enumerate(self.atoms):
+            if (atom['res_num'] != prev_atom['res_num'] and
+                    atom['res_num'] == n):
+                strand1 = self.atoms[0:i]
+                strand2 = self.atoms[i:]
+            prev_atom = atom
+        for atom in self.atoms:
+            if atom in strand1:
+                atom['strand'] = 1
+            elif atom in strand2:
+                atom['strand'] = 2
+        return self.atoms
+
+    def pairs(self):
+        str1 = [atom for atom in self.atoms if atom['strand'] == 1]
+        str2 = [atom for atom in self.atoms if atom['strand'] == 2]
+        for i, (a, b) in enumerate(zip(str1, str2)):
+            a['pair'] = i
+            b['pair'] = i
+        return self.atoms
+
+    def get_pairs(self, start = 0, end = 10):
+        """Get base pairs"""
+        # Both strands are numbered 5' to 3'
+        for i in range(start, end):
+            yield [atom for atom in self.atoms if atom['pair'] == i]
+
+    def get_pair_crds(self):
+        """Coordinates by base pair"""
+        for pair in self.get_pairs():
+            yield crds_of(pair)
 
 class Fit:
     """Store fit results"""
