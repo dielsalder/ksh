@@ -5,6 +5,7 @@ import ksh
 class Split(pdb.Dna):
     def __init__(self):
         self.s_fits = {}
+        self.s_res = {}
 
     def split(self, i):
         """Split helix at base point i"""
@@ -19,11 +20,19 @@ class Split(pdb.Dna):
 
     def fit_segs(self, segs):
         """Fit one segpair and store in s_fits"""
+        fits = []
         for s in segs:
-            p = s[0]['pair']
-            s = s[0]['strand']
-            fit = self.minimize(s)
-            self.s_fits.append([p, s] : fit)
+            p = s[0]['pair']    # "pair" of first nuc
+            s = s[1]['strand']    # "pair" of first nuc
+            f = self.minimize(s)
+            res = f[1]
+            self.s_res.append(res)
+            fits.append({(s, p):f})
+        self.s_fits.append(fits)
+        return res
+
+    def fit_gen_segs(self, np):
+        """Fit over np base pairs"""
 
 def test(filename):
     pdb = p.Pdb(filename)

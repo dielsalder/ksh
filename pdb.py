@@ -138,6 +138,7 @@ class Fit:
         """Minimize rotation"""
         rotation = ksh.best_rotation(self.crdset)
         best = rotation.calc_all()
+        self.res = best[1]
         self.best = best
         return self.best
 
