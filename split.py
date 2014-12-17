@@ -21,7 +21,7 @@ class Split(pdb.Dna):
             yield self.split(i)
 
     def fit_segs(self, i):
-        """Fit one segpair"""
+        """Fit segpair from split at bp i"""
         front, rear = split(self, i)
         f_res = self.minimize(front).res
         r_res = self.minimize(rear).res
@@ -31,11 +31,10 @@ class Split(pdb.Dna):
         """Fit one segpair and store in s_fits"""
         fits = []
         for s in segs:
-            p = s[0]['pair']    # "pair" of first nuc
-            s = s[1]['strand']    # "pair" of first nuc
+            p = s[0]['pair']    # get pair and strand
+            s = s[1]['strand']
             f = self.minimize(s)
-            res = f[1]
-            self.s_res.append(res)
+            self.s_res.append(f.res)
             fits.append({(s, p):f})
         self.s_fits.append(fits)
         return res
@@ -47,4 +46,3 @@ class Split(pdb.Dna):
 def test(filename):
     pdb = p.Pdb(filename)
     dna = p.Dna(p.Molecule(pdb.get_all))
-
