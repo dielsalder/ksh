@@ -7,15 +7,18 @@ class Split(pdb.Dna):
         self.s_fits = {}
 
     def split(self, i):
+        """Split helix at base point i"""
         front = [a for a in self.atoms if a['pair'] < i]
         rear = [a for a in self.atoms if a['pair'] > i]
         yield front, rear
 
-    def gen_split(self, np):
+    def gen_segs(self, np):
+        """Yield split atoms for each in range of bp"""
         for i in range(1, np):
             yield self.split(i)
 
-    def fit_split(self, segs):
+    def fit_segs(self, segs):
+        """Fit one segpair and store in s_fits"""
         for s in segs:
             p = s[0]['pair']
             s = s[0]['strand']
