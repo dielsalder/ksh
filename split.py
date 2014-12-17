@@ -1,3 +1,5 @@
+from numpy import fmin_bfgs
+
 import pdb as p
 import dna
 import ksh
@@ -8,7 +10,7 @@ class Split(pdb.Dna):
         self.s_res = {}
 
     def split(self, i):
-        """Split helix at base point i"""
+        """Split helix at base pair i"""
         front = [a for a in self.atoms if a['pair'] < i]
         rear = [a for a in self.atoms if a['pair'] > i]
         yield front, rear
@@ -18,7 +20,14 @@ class Split(pdb.Dna):
         for i in range(1, np):
             yield self.split(i)
 
-    def fit_segs(self, segs):
+    def fit_segs(self, i):
+        """Fit one segpair"""
+        front, rear = split(self, i)
+        f_res = self.minimize(front).res
+        r_res = self.minimize(rear).res
+        return f_res + r_res
+
+    def save_fit_segs(self, segs):
         """Fit one segpair and store in s_fits"""
         fits = []
         for s in segs:
@@ -31,8 +40,9 @@ class Split(pdb.Dna):
         self.s_fits.append(fits)
         return res
 
-    def fit_gen_segs(self, np):
-        """Fit over np base pairs"""
+    def best_split(self):
+        """Find best-fit segment pair"""
+        pass
 
 def test(filename):
     pdb = p.Pdb(filename)
