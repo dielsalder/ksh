@@ -90,6 +90,7 @@ class Dna:
         for i, (a, b) in enumerate(zip(str1, str2)):
             a['pair'] = i
             b['pair'] = i
+            self.numbp = i
 
     def get_pairs(self, start = 0, end = 10):
         """Get base pairs"""

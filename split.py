@@ -1,48 +1,31 @@
 from numpy import fmin_bfgs
 
-import pdb as p
+import pdb
 import dna
 import ksh
 
 class Split(pdb.Dna):
     def __init__(self):
-        self.s_fits = {}
-        self.s_res = {}
+        self.all_res = {}
 
-    def split(self, i):
-        """Split helix at base pair i"""
-        front = [a for a in self.atoms if a['pair'] < i]
-        rear = [a for a in self.atoms if a['pair'] > i]
-        yield front, rear
+    def split(self, ibp):
+        """Split helix at base pair ibp"""
+        self.split = ibp
+        self.front = pdb.crdset([a for a in self.atoms if a['pair'] < ibp])
+        self.rear = pdb.crdset([a for a in self.atoms if a['pair'] > ibp])
+        return self.front, self.rear
 
-    def gen_segs(self, np):
-        """Yield split atoms for each in range of bp"""
-        for i in range(1, np):
-            yield self.split(i)
+    def eval_res(self):
+        """Calculate fit for current split and store res in self.all_res"""
+        res_f = self.minimize((self.front).res)
+        res_r = self.minimize((self.rear).res)
+        res_sum = res_f + res_r
+        self.all_res[self.split] = sum_res
+        return sum_res
 
-    def fit_segs(self, i):
-        """Fit segpair from split at bp i"""
-        front, rear = split(self, i)
-        f_res = self.minimize(front).res
-        r_res = self.minimize(rear).res
-        return f_res + r_res
-
-    def save_fit_segs(self, segs):
-        """Fit one segpair and store in s_fits"""
-        fits = []
-        for s in segs:
-            p = s[0]['pair']    # get pair and strand
-            s = s[1]['strand']
-            f = self.minimize(s)
-            self.s_res.append(f.res)
-            fits.append({(s, p):f})
-        self.s_fits.append(fits)
-        return res
-
-    def best_split(self):
-        """Find best-fit segment pair"""
-        pass
-
-def test(filename):
-    pdb = p.Pdb(filename)
-    dna = p.Dna(p.Molecule(pdb.get_all))
+    def iterbp(self):
+        """Fill all_res with res from each bp and find min"""
+        for ibp in (2, self.numbp - 2):
+            self.split(ibp)
+            self.eval_res()
+        self.res_min = min(self.all_res, key = self.all_res.get)
