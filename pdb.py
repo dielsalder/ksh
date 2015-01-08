@@ -21,7 +21,7 @@ def atom(line):
     return atom
 
 class Pdb:
-    """Handle pdb files"""
+    """pdb handler"""
     def __init__(self, filename):
         self.filename = filename
 
@@ -41,6 +41,7 @@ class Pdb:
         return atoms
 
 class Molecule:
+    """pdb file"""
     def __init__(self, atoms):
         self.atoms = atoms
         self.fits = []
@@ -77,7 +78,7 @@ class Molecule:
         return min_fit
 
 class Dna(Molecule):
-    """Store data for the atoms in one DNA molecule"""
+    """DNA molecule (from a pdb file)"""
     def __init__(self, atoms):
         self.atoms = atoms
         self.strands()
@@ -124,7 +125,7 @@ class Dna(Molecule):
             yield crds_of(pair)
 
 class Fit:
-    """Store fit results"""
+    """Results of one fit"""
     def __init__(self, crds):
         self.crdset = ksh.crdset(crds)
 
@@ -145,4 +146,4 @@ class Fit:
     def write_minimize(self, Molecule):
         """Write minimized fit to selected Molecule"""
         Molecule.fits.append(self.best)
-
+        return Molecule.fits

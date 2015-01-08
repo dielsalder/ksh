@@ -38,6 +38,6 @@ class Split(pdb.Dna):
     def min_crdset(self):
         """Evaluate helix parameters for minimum split"""
         self.split(ibp)
-        self.front.calc_all()
-        self.rear.calc_all()
+        self.front.minimize()
+        self.rear.minimize()
         return self.front, self.rear, self.i_split
