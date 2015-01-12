@@ -4,13 +4,13 @@ from scipy.optimize import *
 PI = 3.14159265359
 
 # linear least squares problem for circle-fitting
-# build a matrix
 def build_amat(crds):
+    """build a matrix"""
     amat = insert(crds, 0, values = 1, axis = 1)
     return amat[:, [0, 1, 2]]
 
-# build b matrix
 def build_bmat(crds):
+    """build b matrix"""
     bmat = []
     for iatom in crds:
         bmat.append(iatom[0]**2 + iatom[1]**2)

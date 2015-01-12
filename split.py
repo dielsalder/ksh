@@ -1,5 +1,4 @@
-from numpy import fmin_bfgs
-
+import scipy.optimize as sp
 import pdb
 import dna
 import ksh
@@ -32,6 +31,7 @@ class Split(pdb.Dna):
 
     def fmin_res(self):
         """Find ibp of minimum residual in res_all"""
+        pass
         self.bp_min = min(self.res_all, key = self.res_all.get)
         return self.bp_min
 
