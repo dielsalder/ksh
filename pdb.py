@@ -1,4 +1,6 @@
-def flatten(x):
+import collections
+
+def flatten(x, ignore_types=(str, bytes, dict)):
     for i in x:
         if isinstance(x, collections.Iterable) and not isinstance(x, ignore_types):
             for i in flatten(x):
@@ -13,17 +15,17 @@ def atom(line):
             atom_num = int(line[1]),
             atom_name = line[2],
             res_name = line[3],
-            res_num = int(line[5]),
-            x = float(line[6]),
-            y = float(line[7]),
-            z = float(line[8])
+            res_num = int(line[4]),
+            x = float(line[5]),
+            y = float(line[6]),
+            z = float(line[7])
     )
     return atom
 
 class Pdb:
     """pdb handler"""
-    def __init__(self, filename):
-        self.filename = filename
+    def __init__(self, name):
+        self.filename = name
 
     def get_all(self):
         """Read all atoms in pdb file"""
@@ -55,8 +57,11 @@ class Molecule:
 
     def crds_of(self, atoms):
         """Get xyz coordinates of selected atoms"""
-        crds = [[atom['x'], atom['y'], atom['z']] for atom in flatten(atoms)]
+        crds = [[a['x'], a['y'], a['z']] for a in atoms]
         return crds
+
+    def get_res(self, res_num):
+        return [a for a in self.atoms if a['res_num'] == res_num]
 
     def write(self, atoms, out = open('atoms.pdb', 'w')):
         """Write selected atoms to pdb"""
@@ -105,9 +110,12 @@ class Dna(Molecule):
                 atom['strand'] = 2
         return self.atoms
 
+    def get_strand(self, strand):
+        return [atom for atom in self.atoms if atom['strand'] == strand]
+
     def pairs(self):
-        str1 = [atom for atom in self.atoms if atom['strand'] == 1]
-        str2 = [atom for atom in self.atoms if atom['strand'] == 2]
+        str1 = self.get_strand(1)
+        str2 = self.get_strand(2)
         for i, (a, b) in enumerate(zip(str1, str2)):
             a['pair'] = i
             b['pair'] = i
@@ -119,7 +127,7 @@ class Dna(Molecule):
         for i in range(start, end):
             yield [atom for atom in self.atoms if atom['pair'] == i]
 
-    def get_pair_crds(self):
+    def getcrds_pairs(self):
         """Coordinates by base pair"""
         for pair in self.get_pairs():
             yield crds_of(pair)
