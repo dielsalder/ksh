@@ -116,16 +116,29 @@ class Dna(Molecule):
     def pairs(self):
         str1 = self.get_strand(1)
         str2 = self.get_strand(2)
-        for i, (a, b) in enumerate(zip(str1, str2)):
-            a['pair'] = i
-            b['pair'] = i
+        res_prev = 0
+        current = 0
+        for (a, b) in zip(str1, str2):
+            if not a['res_num'] == current:
+                current += 1
+            a['pair'] = current
+            b['pair'] = current
         return self.atoms
 
-    def get_pairs(self, start = 0, end = 10):
+    def get_pair(self, i_pair):
+        """Get one base pair"""
+        return [a for a in self.atoms if a['pair'] == i_pair]
+    # add flatten to init, that was the problem.
+        #selection = []
+        #for a in self.atoms:
+        #    if a['pair'] == i_pair:
+        #        selection.append(a)
+        #return selection
+
+    def get_pairs(self, start = 1, end = 10):
         """Get base pairs"""
         # Both strands are numbered 5' to 3'
-        for i in range(start, end):
-            yield [atom for atom in self.atoms if atom['pair'] == i]
+        return [a for a in self.atoms if a['pair'] in range(start, end)]
 
     def getcrds_pairs(self):
         """Coordinates by base pair"""
