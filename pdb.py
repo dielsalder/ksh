@@ -127,13 +127,14 @@ class Dna(Molecule):
 
     def get_pair(self, i_pair):
         """Get one base pair"""
-        return [a for a in self.atoms if a['pair'] == i_pair]
+        #return [a for a in self.atoms if a['pair'] == i_pair]
     # add flatten to init, that was the problem.
-        #selection = []
-        #for a in self.atoms:
-        #    if a['pair'] == i_pair:
-        #        selection.append(a)
-        #return selection
+        selection = []
+        for a in self.atoms:
+            print a
+            if a['pair'] == i_pair:
+                selection.append(a)
+        return selection
 
     def get_pairs(self, start = 1, end = 10):
         """Get base pairs"""
