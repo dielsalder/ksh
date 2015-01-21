@@ -116,35 +116,28 @@ class Dna(Molecule):
     def pairs(self):
         str1 = self.get_strand(1)
         str2 = self.get_strand(2)
-        res_prev = 0
         current = 0
         for (a, b) in zip(str1, str2):
             if not a['res_num'] == current:
                 current += 1
             a['pair'] = current
             b['pair'] = current
+        # kludge: don't know why, but with test file ideal_bdna.pdb atoms
+        # in strand 1 starting at 345 are unpaired
+        # this assigns last pair number to all unpaired atoms
+        for a in self.atoms:
+            if not 'pair' in a:
+                a['pair'] = current
         return self.atoms
 
     def get_pair(self, i_pair):
         """Get one base pair"""
-        #return [a for a in self.atoms if a['pair'] == i_pair]
-    # add flatten to init, that was the problem.
-        selection = []
-        for a in self.atoms:
-            print a
-            if a['pair'] == i_pair:
-                selection.append(a)
-        return selection
+        return [a for a in self.atoms if a['pair'] == i_pair]
 
-    def get_pairs(self, start = 1, end = 10):
-        """Get base pairs"""
+    def get_pairs(self, start, end):
+        """Get base pairs from start to end, inclusive"""
         # Both strands are numbered 5' to 3'
-        return [a for a in self.atoms if a['pair'] in range(start, end)]
-
-    def getcrds_pairs(self):
-        """Coordinates by base pair"""
-        for pair in self.get_pairs():
-            yield crds_of(pair)
+        return [a for a in self.atoms if a['pair'] in range(start, end + 1)]
 
 class Fit:
     """Results of one fit"""
