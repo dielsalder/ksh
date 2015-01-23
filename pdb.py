@@ -1,4 +1,5 @@
 import collections
+import ksh
 
 def flatten(x, ignore_types=(str, bytes, dict)):
     for i in x:
@@ -21,6 +22,11 @@ def atom(line):
             z = float(line[7])
     )
     return atom
+
+def get_crds(atoms):
+    """Get xyz coordinates of selected atoms"""
+    crds = [[a['x'], a['y'], a['z']] for a in atoms]
+    return crds
 
 class Pdb:
     """pdb handler"""
@@ -55,11 +61,6 @@ class Molecule:
                 and atom['atom_name'] in atom_name])
         return selection
 
-    def crds_of(self, atoms):
-        """Get xyz coordinates of selected atoms"""
-        crds = [[a['x'], a['y'], a['z']] for a in atoms]
-        return crds
-
     def get_res(self, res_num):
         return [a for a in self.atoms if a['res_num'] == res_num]
 
@@ -76,7 +77,7 @@ class Molecule:
 
     def minimize(self, selection):
         """fit minimized helix"""
-        crds = crds_of(selection)
+        crds = get_crds(selection)
         fit = Fit(crds)
         min_fit = (fit.minimize())
         self.fits.append(min_fit)
@@ -88,7 +89,7 @@ class Dna(Molecule):
         self.atoms = atoms
         self.strands()
         self.pairs()
-        self.all_crds = self.crds_of(self.atoms)
+        self.all_crds = get_crds(self.atoms)
 
     def strands(self, n = 1):
         """
@@ -141,8 +142,9 @@ class Dna(Molecule):
 
 class Fit:
     """Results of one fit"""
-    def __init__(self, crds):
-        self.crdset = ksh.crdset(crds)
+    def __init__(self, atoms):
+        self.crds = get_crds(atoms)
+        self.crdset = ksh.crdset(self.crds)
 
     def no_rotate(self):
         """Fit without rotation"""
@@ -151,7 +153,7 @@ class Fit:
         return self.no_rotate
 
     def minimize(self):
-        """Minimize rotation"""
+        """Minimize rotation using ksh's best_rotation"""
         rotation = ksh.best_rotation(self.crdset)
         best = rotation.calc_all()
         self.res = best[1]
@@ -159,6 +161,6 @@ class Fit:
         return self.best
 
     def write_minimize(self, Molecule):
-        """Write minimized fit to selected Molecule"""
+        """Write minimized fit to Molecule.fits"""
         Molecule.fits.append(self.best)
         return Molecule.fits

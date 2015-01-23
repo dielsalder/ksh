@@ -4,23 +4,26 @@ import dna
 import ksh
 
 class Split(pdb.Dna):
-    def __init__(self):
+    def __init__(self, Dna):
+        self.atoms = Dna.atoms
         self.res_all = {}
 
     def split(self, ibp):
         """Split helix at base pair ibp"""
         self.i_split = ibp
-        self.front = pdb.crdset([a for a in self.atoms if a['pair'] < ibp])
-        self.rear = pdb.crdset([a for a in self.atoms if a['pair'] > ibp])
+        self.front = pdb.Fit([a for a in self.atoms if a['pair'] < ibp])
+        self.rear = pdb.Fit([a for a in self.atoms if a['pair'] > ibp])
         return self.front, self.rear
 
     def eval_res(self):
         """Calculate fit for current split and store res in self.res_all"""
-        res_f = self.minimize((self.front).res)
-        res_r = self.minimize((self.rear).res)
+        self.front.minimize()
+        self.rear.minimize()
+        res_f = self.front.res
+        res_r = self.rear.res
         res_sum = res_f + res_r
-        self.res_all[self.i_split] = sum_res
-        return sum_res
+        self.res_all[self.i_split] = res_sum
+        return res_sum
 
     def iterbp(self):
         """Fill res_all with res from each bp"""
@@ -41,3 +44,6 @@ class Split(pdb.Dna):
         self.front.minimize()
         self.rear.minimize()
         return self.front, self.rear, self.i_split
+
+    def __str__(self):
+        return self.res_sum
