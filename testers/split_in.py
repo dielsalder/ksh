@@ -5,6 +5,6 @@ mol = Molecule(pdbfile.get_all())
 bdna = Dna(mol.atoms)
 
 split = Split(bdna)
-split.split(5)
-print split.eval_res()
-# 2473.1115
+split.iterbp()
+print split.fmin_bp()
+print split.res_all

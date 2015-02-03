@@ -1,3 +1,4 @@
+import re
 import collections
 import ksh
 
@@ -16,10 +17,10 @@ def atom(line):
             atom_num = int(line[1]),
             atom_name = line[2],
             res_name = line[3],
-            res_num = int(line[4]),
-            x = float(line[5]),
-            y = float(line[6]),
-            z = float(line[7])
+            res_num = int(line[5]),
+            x = float(line[6]),
+            y = float(line[7]),
+            z = float(line[8])
     )
     return atom
 
@@ -43,7 +44,7 @@ class Pdb:
     def get_nucleic(self):
         """Read only nucleic acid atoms in pdb file"""
         with open(self.filename) as pdb:
-            atoms = [atom(line) for line in pdb if search
+            atoms = [atom(line) for line in pdb if re.search
                     ('(^ATOM)\s*\S*\s*\S*\s*'
                      '(DA5|DA3|DA|DT5|DT3|DT|DG5|DG3|DG|DC5|DC3|DC)', line)]
         return atoms
@@ -90,6 +91,7 @@ class Dna(Molecule):
         self.strands()
         self.pairs()
         self.all_crds = get_crds(self.atoms)
+        self.set_numbp()
 
     def strands(self, n = 1):
         """
@@ -139,6 +141,12 @@ class Dna(Molecule):
         """Get base pairs from start to end, inclusive"""
         # Both strands are numbered 5' to 3'
         return [a for a in self.atoms if a['pair'] in range(start, end + 1)]
+
+    def set_numbp(self):
+        """Count number of base pairs"""
+        bp = [a['pair'] for a in self.atoms]
+        self.numbp = max(bp)
+        return self.numbp
 
 class Fit:
     """Results of one fit"""

@@ -7,6 +7,7 @@ class Split(pdb.Dna):
     def __init__(self, Dna):
         self.atoms = Dna.atoms
         self.res_all = {}
+        self.set_numbp()
 
     def split(self, ibp):
         """Split helix at base pair ibp"""
@@ -27,12 +28,12 @@ class Split(pdb.Dna):
 
     def iterbp(self):
         """Fill res_all with res from each bp"""
-        for ibp in (2, self.numbp - 2):
+        for ibp in range(2, self.numbp - 2):
             self.split(ibp)
             self.eval_res()
         return self.res_all
 
-    def fmin_res(self):
+    def fmin_bp(self):
         """Find ibp of minimum residual in res_all"""
         pass
         self.bp_min = min(self.res_all, key = self.res_all.get)
