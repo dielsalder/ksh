@@ -45,7 +45,7 @@ class crdset:
         self.x = lstsq[0]
         self.calc_res_v()
         # get residual from least squares solution
-        self.res = float(lstsq[1])
+        self.res_svd = float(lstsq[1])
         self.singvals = lstsq[3]
         return self.lstsq
 
@@ -57,7 +57,7 @@ class crdset:
         return [self.radius, self.center]
 
     def calc_res_v(self):
-        """Vageli residual"""
+        """Vageli's residual"""
         x = self.x
         res = 0
         x0 = x[1]
@@ -132,10 +132,10 @@ class crdset:
     def calc_all(self):
         """Calculate everything"""
         self.lstsq()            # update least-squares stuff
-        self.calc_res_v()
+        #self.calc_res_v()
         self.lstsq_results()    # circle parameters
         self.helical_results()  # helical parameters
-        return [self.lstsq(), self.calc_res_v(), self.lstsq_results,
+        return [self.lstsq(), self.res_svd, self.lstsq_results,
             self.helical_results()]
 
     def print_results(self, title=''):

@@ -26,11 +26,12 @@ class Split(pdb.Dna):
         self.res_all[self.i_split] = res_sum
         return res_sum
 
-    def iterbp(self):
-        """Fill res_all with res from each bp"""
-        for ibp in range(2, self.numbp - 2):
+    def iterbp(self, start = 2):
+        """Fill res_all with res from selected bp"""
+        for ibp in range(start, self.numbp - 2):
             self.split(ibp)
-            self.eval_res()
+            #self.eval_res()
+            print ibp, '\t', self.eval_res()
         return self.res_all
 
     def fmin_bp(self):
