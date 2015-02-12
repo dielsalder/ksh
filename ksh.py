@@ -1,5 +1,5 @@
 from numpy import *
-from scipy.optimize import *
+from scipy.optimize import fmin_bfgs
 
 PI = 3.14159265359
 

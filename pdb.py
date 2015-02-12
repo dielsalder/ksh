@@ -10,17 +10,18 @@ def flatten(x, ignore_types=(str, bytes, dict)):
         else:
             yield x
 
-def atom(line):
+def atom(line, a_num = 1, a_name = 2, r_name = 3, r_num = 5,
+            x = 6, y = 7, z = 8):
     """Read one line of pdb into dict"""
     line = line.split()
     atom = dict(
-            atom_num = int(line[1]),
-            atom_name = line[2],
-            res_name = line[3],
-            res_num = int(line[5]),
-            x = float(line[6]),
-            y = float(line[7]),
-            z = float(line[8])
+            atom_num = int(line[a_num]),
+            atom_name = line[a_name],
+            res_name = line[r_name],
+            res_num = int(line[r_num]),
+            x = float(line[x]),
+            y = float(line[y]),
+            z = float(line[z])
     )
     return atom
 
@@ -55,7 +56,7 @@ class Molecule:
         self.atoms = atoms
         self.fits = []
 
-    def select(self, res = [], atom_name = []):
+    def select(self, res = ['DA', 'DG', 'DC', 'DT'], atom_name = []):
         """Select atoms by residue and element"""
         selection = (
             [atom for atom in self.atoms if atom['res_name'] in res
@@ -93,7 +94,7 @@ class Dna(Molecule):
         self.all_crds = get_crds(self.atoms)
         self.set_numbp()
 
-    def strands(self, n = 1):
+    def strands(self, n = 2):
         """
         Group atoms by helix strand
         Set n as starf of residue numbering
