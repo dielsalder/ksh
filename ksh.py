@@ -1,4 +1,7 @@
-from numpy import *
+#from numpy import *
+# if name not defined, it's in numpy - continue tomorrow
+import numpy as np
+from numpy import sin, cos, tan, dot, arccos
 from scipy.optimize import fmin_bfgs
 
 PI = 3.14159265359
@@ -6,7 +9,7 @@ PI = 3.14159265359
 # linear least squares problem for circle-fitting
 def build_amat(crds):
     """build a matrix"""
-    amat = insert(crds, 0, values = 1, axis = 1)
+    amat = np.insert(crds, 0, values = 1, axis = 1)
     return amat[:, [0, 1, 2]]
 
 def build_bmat(crds):
@@ -14,13 +17,13 @@ def build_bmat(crds):
     bmat = []
     for iatom in crds:
         bmat.append(iatom[0]**2 + iatom[1]**2)
-    return array(bmat)
+    return np.array(bmat)
 
 def solve(crds):
     """solve ax = b"""
     a = build_amat(crds)
     b = build_bmat(crds)
-    svd = linalg.lstsq(a, b)
+    svd = np.linalg.lstsq(a, b)
     # linalg.lstsq returns
     #       [x, sum of residuals, rank(a), singular values of a]
     return svd
@@ -118,13 +121,13 @@ class crdset:
         r = (1-(a**2))**(0.5)
 
         for iatom in self.crds:
-            new_xyz = dot(array([[((1 - a**2)*(0.5)), 0, a],
+            new_xyz = dot(np.array([[((1 - a**2)*(0.5)), 0, a],
                                 [(-(a * b)/r),  (c / r), b],
                                 [(-(a * c)/r), -(b / r), c]]),
-                              array(iatom))
+                              np.array(iatom))
             new_xyz[0] = new_xyz[0] * 2
             new_crds.append(new_xyz)
-        self.crds = array(new_crds)
+        self.crds = np.array(new_crds)
         # recalculate residual, necessary for minimization
         self.lstsq()
         return self.crds
@@ -136,7 +139,7 @@ class crdset:
         self.lstsq_results()    # circle parameters
         self.helical_results()  # helical parameters
         return [self.lstsq(), self.res_svd, self.lstsq_results,
-            self.helical_results()]
+            self.helical_results(), (self.phi, self.the)]
 
     def print_results(self, title=''):
         """Print results of calculations with optional title"""
@@ -156,7 +159,7 @@ class crdset:
         print "Helical pitch: ", self.pitch
 
     def __init__(self, crds, *phi_the):
-        self.crds = array(crds)
+        self.crds = np.array(crds)
         if phi_the:
             self.phi, self.the = phi_the
             self.rotate(self.phi, self.the)
@@ -165,11 +168,12 @@ class crdset:
 
 # use scipy's bfgs optimization function
 def best_rotation(start):
-    phi_the_min = fmin_bfgs(resv_phi_the, array([0, 0]), args = (start.crds, 0), disp = 0)
+    phi_the_min = fmin_bfgs(resv_phi_the, np.array([0, 0]), args = (start.crds, 0), disp = 0)
     phi, the = phi_the_min
     best_crds = crdset(start.crds, phi, the)
     best_crds.calc_all()
-    return best_crds
+# best_rotation should be in crdset class, phi/the annoying to access - fix this
+    return (best_crds, phi, the)
 
 def test_fit(reference, rotated):
     reference.calc_all()

@@ -7,6 +7,7 @@ class Split(pdb.Dna):
     def __init__(self, Dna):
         self.atoms = Dna.atoms
         self.res_all = {}
+        self.angles_all = {}
         self.set_numbp()
 
     def split(self, ibp):
@@ -22,16 +23,20 @@ class Split(pdb.Dna):
         self.rear.minimize()
         res_f = self.front.res
         res_r = self.rear.res
-        res_sum = res_f + res_r
-        self.res_all[self.i_split] = res_sum
-        return res_sum
+        self.res_sum = res_f + res_r
+        self.res_all[self.i_split] = self.res_sum
+
+        self.angles_all[self.i_split] = ([[self.front.phi, self.front.the],
+            [self.rear.phi, self.rear.the]])
+        return self.res_sum
 
     def iterbp(self, start = 2):
         """Fill res_all with res from selected bp"""
         for ibp in range(start, self.numbp - 2):
             self.split(ibp)
             #self.eval_res()
-            print ibp, '\t', self.eval_res()
+            self.eval_res()
+            print self
         return self.res_all
 
     def fmin_bp(self):
@@ -48,4 +53,5 @@ class Split(pdb.Dna):
         return self.front, self.rear, self.i_split
 
     def __str__(self):
-        return self.res_sum
+        return "%3d  %12d\t%4d\t%4d\t%4d\t%4d" % (self.i_split, self.res_sum,
+                self.front.phi, self.front.the, self.rear.phi, self.rear.the)
