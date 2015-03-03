@@ -167,7 +167,7 @@ class Fit:
         best = rotation[0].calc_all()
         self.res = best[1]
         self.phi = rotation[1]
-        self.phi = rotation[2]
+        self.the = rotation[2]
         self.best = best
         return self.best
 

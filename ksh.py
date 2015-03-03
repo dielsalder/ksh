@@ -5,6 +5,9 @@ from numpy import sin, cos, tan, dot, arccos
 from scipy.optimize import fmin_bfgs
 
 PI = 3.14159265359
+# numpy ignores divide by zero error
+# doesn't work but this is apparently how it should work?
+np.seterr(divide = 'ignore')
 
 # linear least squares problem for circle-fitting
 def build_amat(crds):

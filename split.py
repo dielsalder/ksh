@@ -31,7 +31,8 @@ class Split(pdb.Dna):
         return self.res_sum
 
     def iterbp(self, start = 2):
-        """Fill res_all with res from selected bp"""
+        """Fill res_all with res from selected bp and print calculations"""
+        print "i  res         \tfphi\tfthe\trphi\trthe" # header
         for ibp in range(start, self.numbp - 2):
             self.split(ibp)
             #self.eval_res()
