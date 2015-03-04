@@ -32,7 +32,7 @@ class Split(pdb.Dna):
 
     def iterbp(self, start = 2):
         """Fill res_all with res from selected bp and print calculations"""
-        print "i  res         \tfphi\tfthe\trphi\trthe" # header
+        print "i  res         \tfphi\tfthe\trphi\trthe" # spacing is wrong fix this
         for ibp in range(start, self.numbp - 2):
             self.split(ibp)
             #self.eval_res()
