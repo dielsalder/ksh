@@ -135,12 +135,30 @@ class crdset:
         self.lstsq()
         return self.crds
 
+    def iter_rotate(self):
+        best_res = 1000000000000000000000000000
+        for phi in range(0, 360):
+            for the in range(0, 360):
+                self.rotated_crds = self.rotate(phi, the)
+                self.lstsq()
+                if self.res_svd < best_res:
+                    best_res = self.res_svd
+                    best_phi = phi
+                    best_the = the
+        self.phi = best_phi
+        self.the = best_the
+        self.best_rotate = (best_phi, best_the)
+        self.best_res = best_res
+        return [self.rotate_crds, best_phi, best_the]
+
     def calc_all(self):
         """Calculate everything"""
-        self.lstsq()            # update least-squares stuff
+        #self.lstsq()            # update least-squares stuff
         #self.calc_res_v()
         self.lstsq_results()    # circle parameters
         self.helical_results()  # helical parameters
+        # uses svd residual
+        # simplify phi, the
         return [self.lstsq(), self.res_svd, self.lstsq_results,
             self.helical_results(), (self.phi, self.the)]
 

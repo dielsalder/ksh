@@ -161,13 +161,17 @@ class Fit:
         self.no_rotate = fit
         return self.no_rotate
 
-    def minimize(self):
-        """Minimize rotation using ksh's best_rotation"""
-        rotation = ksh.best_rotation(self.crdset)
+    def minimize(self, method = 'iterate'):
+        """ method can be either iterate (iter_rotate) or bfgs (best_rotation) """
+        if method == 'iterate':
+            rotation = self.crdset.iter_rotate()
+        elif method == 'bfgs':
+            rotation = ksh.best_rotation(self.crdset)
+        #best_rotation returns (crds, phi, the)
         best = rotation[0].calc_all()
         self.res = best[1]
-        self.phi = rotation[1]
-        self.the = rotation[2]
+        self.phi = rotation[1] % 360
+        self.the = rotation[2] % 360
         self.best = best
         return self.best
 
