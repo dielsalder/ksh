@@ -17,10 +17,10 @@ class Split(pdb.Dna):
         self.rear = pdb.Fit([a for a in self.atoms if a['pair'] > ibp])
         return self.front, self.rear
 
-    def eval_res(self):
+    def eval_res(self, method = "iterate"):
         """Calculate fit for current split and store res in self.res_all"""
-        self.front.minimize()
-        self.rear.minimize()
+        self.front.minimize(method = method)
+        self.rear.minimize(method = method)
         res_f = self.front.res
         res_r = self.rear.res
         self.res_sum = res_f + res_r
@@ -30,7 +30,7 @@ class Split(pdb.Dna):
             [self.rear.phi, self.rear.the]])
         return self.res_sum
 
-    def iterbp(self, start = 2):
+    def iterbp(self, start = 2, method = "iterate"):
         """Fill res_all with res from selected bp and print calculations"""
         print "i  res         \tfphi\tfthe\trphi\trthe" # spacing is wrong fix this
         for ibp in range(start, self.numbp - 2):

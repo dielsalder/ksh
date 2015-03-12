@@ -124,32 +124,33 @@ class crdset:
         r = (1-(a**2))**(0.5)
 
         for iatom in self.crds:
-            new_xyz = dot(np.array([[((1 - a**2)*(0.5)), 0, a],
-                                [(-(a * b)/r),  (c / r), b],
-                                [(-(a * c)/r), -(b / r), c]]),
-                              np.array(iatom))
+            new_xyz = dot(np.array ([[((1 - a**2)*(0.5)),       0 , a],
+                                    [(-(a * b)/r)       ,  (c / r), b],
+                                    [(-(a * c)/r)       , -(b / r), c]]),
+                                np.array(iatom))
             new_xyz[0] = new_xyz[0] * 2
             new_crds.append(new_xyz)
         self.crds = np.array(new_crds)
         # recalculate residual, necessary for minimization
-        self.lstsq()
         return self.crds
 
-    def iter_rotate(self):
+    def iter_rotate(self, step = 30):
         best_res = 1000000000000000000000000000
-        for phi in range(0, 360):
-            for the in range(0, 360):
-                self.rotated_crds = self.rotate(phi, the)
-                self.lstsq()
+        for phi in range(0, 360, step):
+            for the in range(0, 360, step):
+                rotated_crds = self.rotate(phi, the)
+                #print "%4d\t%4d\t%12d\t%12d\t" % (phi, the, solve(self.crds)[2], solve(self.crds)[1])
+                #self.lstsq()
                 if self.res_svd < best_res:
                     best_res = self.res_svd
                     best_phi = phi
                     best_the = the
         self.phi = best_phi
         self.the = best_the
-        self.best_rotate = (best_phi, best_the)
         self.best_res = best_res
-        return [self.rotate_crds, best_phi, best_the]
+# " need more than one value to unpack " : apparently phi, the not being passed if they are 0?
+        best_crds = crdset(rotated_crds, (best_phi, best_the))
+        return (best_crds, best_phi, best_the)
 
     def calc_all(self):
         """Calculate everything"""
@@ -179,20 +180,23 @@ class crdset:
         print "K = ", self.k
         print "Helical pitch: ", self.pitch
 
-    def __init__(self, crds, *phi_the):
+    def __init__(self, crds, rotate = False, *phi_the):
         self.crds = np.array(crds)
+# don't know whether this keyword argument works - for now, false for iter_rotate but
+# best_rotation needs true
         if phi_the:
             self.phi, self.the = phi_the
-            self.rotate(self.phi, self.the)
-        else:
-           self.lstsq()
+            if rotate == True:
+                self.rotate(self.phi, self.the)
+        self.lstsq()
 
 # use scipy's bfgs optimization function
 def best_rotation(start):
     phi_the_min = fmin_bfgs(resv_phi_the, np.array([0, 0]), args = (start.crds, 0), disp = 0)
     phi, the = phi_the_min
-    best_crds = crdset(start.crds, phi, the)
-    best_crds.calc_all()
+    best_crds = crdset(start.crds, phi, the, rotate = True)
+    # best_crds.calc_all()
+# is calc_all needed here? it's called again in pdb.minimize() so maybe not
 # best_rotation should be in crdset class, phi/the annoying to access - fix this
     return (best_crds, phi, the)
 
