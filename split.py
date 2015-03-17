@@ -17,10 +17,10 @@ class Split(pdb.Dna):
         self.rear = pdb.Fit([a for a in self.atoms if a['pair'] > ibp])
         return self.front, self.rear
 
-    def eval_res(self, method = "iterate"):
+    def eval_res(self, eval_method = "iterate"):
         """Calculate fit for current split and store res in self.res_all"""
-        self.front.minimize(method = method)
-        self.rear.minimize(method = method)
+        self.front.minimize(method = eval_method)
+        self.rear.minimize(method = eval_method)
         res_f = self.front.res
         res_r = self.rear.res
         self.res_sum = res_f + res_r

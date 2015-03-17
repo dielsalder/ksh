@@ -161,7 +161,7 @@ class Fit:
         self.no_rotate = fit
         return self.no_rotate
 
-    def minimize(self, method = 'iterate'):
+    def minimize(self, method = 'bfgs'):
         """ method can be either iterate (iter_rotate) or bfgs (best_rotation) """
         if method == 'iterate':
             rotation = self.crdset.iter_rotate()

@@ -45,6 +45,23 @@ def resv_phi_the(phi_the, crds, void):
     return start.res_v
 
 class crdset:
+#    def __init__(self, crds, rotate = False, *phi_the):
+#        self.crds = np.array(crds)
+## don't know whether this keyword argument works - for now, false for iter_rotate but
+## best_rotation needs true
+#        if phi_the:
+#            self.phi, self.the = phi_the
+#            if rotate == True:
+#                self.rotate(self.phi, self.the)
+#        self.lstsq()
+
+    def __init__(self, crds, rotate = False, *phi_the):
+        self.crds = np.array(crds)
+        if phi_the:
+            self.phi, self.the = phi_the
+            self.rotate(self.phi, self.the)
+        self.lstsq()
+
     def lstsq(self):
         """Solve ax = b"""
         lstsq = solve(self.crds)
@@ -149,7 +166,7 @@ class crdset:
         self.the = best_the
         self.best_res = best_res
 # " need more than one value to unpack " : apparently phi, the not being passed if they are 0?
-        best_crds = crdset(rotated_crds, (best_phi, best_the))
+        best_crds = crdset(self.crds, best_phi, best_the)
         return (best_crds, best_phi, best_the)
 
     def calc_all(self):
@@ -180,20 +197,9 @@ class crdset:
         print "K = ", self.k
         print "Helical pitch: ", self.pitch
 
-    def __init__(self, crds, rotate = False, *phi_the):
-        self.crds = np.array(crds)
-# don't know whether this keyword argument works - for now, false for iter_rotate but
-# best_rotation needs true
-        if phi_the:
-            self.phi, self.the = phi_the
-            if rotate == True:
-                self.rotate(self.phi, self.the)
-        self.lstsq()
-
 # use scipy's bfgs optimization function
 def best_rotation(start):
     phi_the_min = fmin_bfgs(resv_phi_the, np.array([0, 0]), args = (start.crds, 0), disp = 0)
-    phi, the = phi_the_min
     best_crds = crdset(start.crds, phi, the, rotate = True)
     # best_crds.calc_all()
 # is calc_all needed here? it's called again in pdb.minimize() so maybe not
